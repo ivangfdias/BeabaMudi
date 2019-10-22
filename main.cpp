@@ -1,10 +1,8 @@
-#include <bits/stdc++.h>
+﻿#include <bits/stdc++.h>
 #include <fstream>
 #include <unistd.h>
 #include <fcntl.h>
 #include <io.h>
-//#include <stringapiset.h>
-//#include <wiringPi.h>
 using namespace std;
 
 #define pb push_back
@@ -21,7 +19,81 @@ map<string,int> M;
 set<string> S; //usado para buscar palavras geradas, impedindo que sejam iguais a palavras da Train Data
 map<int,string> Mrev;
 double prob[MAXN][MAXN], soma[MAXN], prob_rev[MAXN][MAXN], soma_rev[MAXN]; //matriz de adjacencias e soma de linhas para calculo de probabilidades
-
+//O primeiro vetor carrega o codigo ASCII das letras acentuadas e cecedilla; o segundo carrega o codigo ANSI (?) das letras acentuadas e cecedilla
+int ascii_special[] = { 192, 193, 194, 195, 199, 201, 202, 205, 211, 212, 213, 218 };
+int string_special[] = { 224, 225, 226, 227, 231, 233, 234, 237, 243, 244, 245, 250 };
+/*
+std::wstring utf8_to_utf16(const std::string& utf8){
+    std::vector<unsigned long> unicode;
+    size_t i = 0;
+    while (i < utf8.size())
+    {
+        unsigned long uni;
+        size_t todo;
+        bool error = false;
+        unsigned char ch = utf8[i++];
+        if (ch <= 0x7F)
+        {
+            uni = ch;
+            todo = 0;
+        }
+        else if (ch <= 0xBF)
+        {
+            throw std::logic_error("not a UTF-8 string");
+        }
+        else if (ch <= 0xDF)
+        {
+            uni = ch&0x1F;
+            todo = 1;
+        }
+        else if (ch <= 0xEF)
+        {
+            uni = ch&0x0F;
+            todo = 2;
+        }
+        else if (ch <= 0xF7)
+        {
+            uni = ch&0x07;
+            todo = 3;
+        }
+        else
+        {
+            throw std::logic_error("not a UTF-8 string");
+        }
+        for (size_t j = 0; j < todo; ++j)
+        {
+            if (i == utf8.size())
+                throw std::logic_error("not a UTF-8 string");
+            unsigned char ch = utf8[i++];
+            if (ch < 0x80 || ch > 0xBF)
+                throw std::logic_error("not a UTF-8 string");
+            uni <<= 6;
+            uni += ch & 0x3F;
+        }
+        if (uni >= 0xD800 && uni <= 0xDFFF)
+            throw std::logic_error("not a UTF-8 string");
+        if (uni > 0x10FFFF)
+            throw std::logic_error("not a UTF-8 string");
+        unicode.push_back(uni);
+    }
+    std::wstring utf16;
+    for (size_t i = 0; i < unicode.size(); ++i)
+    {
+        unsigned long uni = unicode[i];
+        if (uni <= 0xFFFF)
+        {
+            utf16 += (wchar_t)uni;
+        }
+        else
+        {
+            uni -= 0x10000;
+            utf16 += (wchar_t)((uni >> 10) + 0xD800);
+            utf16 += (wchar_t)((uni & 0x3FF) + 0xDC00);
+        }
+    }
+    return utf16;
+}
+*/
 /*
 void acronimo(int barra) {
 	string palavra;
@@ -87,6 +159,7 @@ void poema(int barra) {
 	// o esquema de rimas do soneto eh abba abba cdc dcd
 	vector<string> para_salvar;
 	cout << "\n"; cout.flush();
+
 	for (int i = 0; i < 4; i++) {
 		for (int j = 0; j < versos[i]; j++) {
 			verso.clear();
@@ -120,6 +193,14 @@ void poema(int barra) {
 				cout << Mrev[verso[k]];
 				cout.flush();
 			}
+			//conversao letra corrompida -> letra acentuada no txt
+			for (int k = 0; k < aux.length(); k++) {
+				for (int w = 0; w < 12; w++) {
+					if ((int)(unsigned char)aux[k] == string_special[w]) {
+						aux[k] = (unsigned char)ascii_special[w];
+					}
+				}
+			}
 			para_salvar.pb(aux);
 			cout << endl; cout.flush();
 		}
@@ -127,10 +208,13 @@ void poema(int barra) {
 	}
 	ofstream file_;
 	file_.open("TextoGerado.txt");
+	
 	for (int i = 0; i < (int)para_salvar.size(); i++) {
 		if (i == 4 || i == 8 || i == 11)file_ << " \n";
-		file_ << para_salvar[i] << "\n";
+		file_ << (para_salvar[i]) << "\n";
+	
 	}
+
 	file_.close();
 	//system("lp TextoGerado.txt");
 
@@ -197,14 +281,11 @@ void informacoes() {
 
 
 
-
 int main(){
-	//system("chcp 6500100");
 	//wiringPiSetup();
 	//PinMode(0, INPUT);
 	//PinMode(1, INPUT);
-    //setlocale(LC_ALL, "Portuguese");
-	locale::global(locale(""));
+    setlocale(LC_ALL, "Portuguese");
 	ios_base::sync_with_stdio(false);
     cin.tie(NULL);
 	ifstream Arquivo; 
@@ -221,8 +302,8 @@ int main(){
 			}
 			else {
 				if (ler[i] != '.') {
-					silaba += ler[i];
-					palavra += ler[i];
+						silaba += ler[i];
+						palavra += ler[i];
 				}
 			}
 		}
@@ -259,7 +340,7 @@ int main(){
 			prob[i][j] = (prob[i][j]/soma[i])*SAMP; //calculamos probabilidades para sorteio
 			prob_rev[i][j] = (prob_rev[i][j]/soma_rev[i])*SAMP;
 		}
-	}
+	}	
 	srand(time(NULL));
     cout<<"Bem vindo ao Projeto BEABA 2.0\n"; cout.flush();
 	while(true){
@@ -270,7 +351,10 @@ int main(){
 		cin >> x;
 		if (/*digitalRead(0) == 1 && digitalRead(1) == 0*/ x == 1) system("lp informacoes.txt");
 		else if (/*digitalRead(1) == 1 && digitalRead(0) == 0*/ x == 0) poema(barra);
-		else if (/*digitalRead(1) == 1 && digitalRead(1) == 1*/ x == 2)	 system("lp aperture.txt");
+		else if (/*digitalRead(1) == 1 && digitalRead(1) == 1*/ x == 2) {
+			/*system("lp aperture.txt");*/
+			cout << (unsigned char)192 << endl;
+		}
 		else if (x == 4) break;
     	
 		cout<<"Obrigado por utilizar o Beaba!\n"; cout.flush();
