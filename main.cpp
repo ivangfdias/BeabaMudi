@@ -171,7 +171,7 @@ void sr_ovo1()
 
 void informacoes()
 {
-    //Cabe espaÃ§o pra rodar o programa de latexificaÃ§Ã£o das informaÃ§Ãµes ou a gente faz direto em latex
+    //Cabe espaço pra rodar o programa de latexificação das informações ou a gente faz direto em latex
     system("imprime-informacoes.sh");
 }
 
