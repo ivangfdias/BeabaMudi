@@ -8,7 +8,7 @@ def strip_end(text, suffix):
     return text[:len(text)-len(suffix)]
 
 def nome():
-    sub = subprocess.Popen([r"C:\Users\Ivan\Downloads\BeabaMudi-logica-botoes\BeabaMudi-logica-botoes\geraNome.exe"])
+    sub = subprocess.Popen([r"./geraNome"])
     arquivo = open("nomeGerado.txt", "r", encoding = "utf-8")
     for line in arquivo:
         novoNome = line
@@ -18,7 +18,7 @@ def nome():
     return novoNome.title()
 
 def sobrenome(quantidade):
-    sub = subprocess.Popen([r"C:\Users\Ivan\Downloads\BeabaMudi-logica-botoes\BeabaMudi-logica-botoes\geraSobrenome.exe"])
+    sub = subprocess.Popen([r"./geraSobrenome"])
     sub.communicate(str(quantidade))
     arquivo = open("sobrenomeGerado.txt", "r", encoding = "utf-8")
     novoNome = ""
