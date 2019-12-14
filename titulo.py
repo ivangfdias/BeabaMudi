@@ -15,5 +15,7 @@ def titulo():
     
     arquivo.close
     palavra = palavras[qualPalavra].title()
-    return palavra
+    arquivo.open("TituloGerado.txt","w", encoding = "utf-8")
+    arquivo.write(palavra)
+    arquivo.close
 
