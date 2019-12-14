@@ -12,8 +12,8 @@ for linha in arquivo:
 arquivo.close
 tituloFeito = titulo.titulo()
 arquivo = open("PoemaFormatado.txt", 'w', encoding = "utf-8")
-arquivo.write(tituloFeito + "\n\n")
 for verso in poema:
     arquivo.write(verso)
 arquivo.write("\n\n"+nomeCompleto)
 arquivo.close
+titulo.titulo()
