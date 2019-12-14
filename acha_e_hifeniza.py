@@ -17,7 +17,7 @@ for palavra, frequencia in freq.most_common(42000):
     palavra = re.sub('['+string.punctuation+']', '', palavra)
     if palavra is not "" and "truiu" not in palavra and palavra is not "art" and not hasNumbers(palavra) and palavra not in escrita:
         escrita.append(palavra)
-        escrita.append("\n")
+        escrita.append(".\n")
 for palavra in escrita:
     palavra_hyphen = dic.inserted(palavra)
     banco.write(palavra_hyphen)
